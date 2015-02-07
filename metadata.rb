@@ -6,3 +6,5 @@ description      'Installs/Configures mysql56'
 long_description 'Installs/Configures mysql56'
 version          '0.1.0'
 supports         'centos', '7.0'
+
+depends 'selinux'
