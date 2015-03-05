@@ -1,3 +1,9 @@
+## 0.1.1
+
+Features:
+
+  - Modified Berksfile to use the private berkshelf-api
+
 ## 0.1.0
 
 Features:
