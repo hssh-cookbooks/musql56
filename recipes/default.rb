@@ -24,19 +24,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# Disable SELinux
-selinux 'disabled' do
-end
+if node['platform'] == 'centos'
+  # Disable SELinux
+  selinux 'disabled' do
+  end
 
-execute 'yum-install-mysql-community' do
-  command 'yum install -y http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm'
-  not_if { File.exist? '/etc/yum.repos.d/mysql-community.repo' }
-end
+  execute 'yum-install-mysql-community' do
+    command 'yum install -y http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm'
+    not_if { File.exist? '/etc/yum.repos.d/mysql-community.repo' }
+  end
 
-package 'mysql-community-server' do
-end
+  package 'mysql-community-server' do
+  end
 
-service 'mysql' do
-  supports status: true, restart: true, reload: true
-  action [:enable, :start]
+  service 'mysql' do
+    supports status: true, restart: true, reload: true
+    action [:enable, :start]
+  end
+elsif node['platform'] == 'ubuntu'
+  package 'mysql-server' do
+  end
+
+  service 'mysql' do
+    supports status: true, restart: true, reload: true
+    action [:enable, :start]
+  end
 end
