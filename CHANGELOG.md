@@ -1,3 +1,9 @@
+## 0.2.0
+
+Features:
+
+  - Added support for ubuntu 14.04
+
 ## 0.1.1
 
 Features:
