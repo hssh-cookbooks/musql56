@@ -42,7 +42,33 @@ if node['platform'] == 'centos'
     action [:enable, :start]
   end
 elsif node['platform'] == 'ubuntu'
-  package 'mysql-server' do
+  remote_file '/root/mysql-apt-config_0.3.3-1ubuntu14.04_all.deb' do
+    source 'http://dev.mysql.com/get/mysql-apt-config_0.3.3-1ubuntu14.04_all.deb'
+    action :create_if_missing
+  end
+
+  cookbook_file '/root/preseed.cfg' do
+    notifies :run, 'execute[debconf-set-selections /root/preseed.cfg]', :immediately
+  end
+  execute 'debconf-set-selections /root/preseed.cfg' do
+    action :nothing
+  end
+
+  execute 'install-mysql-apt-config' do
+    environment 'DEBIAN_FRONTEND' => 'noninteractive'
+    command <<-EOC
+      dpkg -i /root/mysql-apt-config_0.3.3-1ubuntu14.04_all.deb
+      apt-get update
+    EOC
+    not_if 'dpkg -l | grep -q mysql-apt-config'
+  end
+
+  %w(
+  mysql-server
+  mysql-utilities
+  ).each do |p|
+    package p do
+    end
   end
 
   service 'mysql' do
